@@ -83,14 +83,12 @@
     </div>
 
     <script>
-        let images = document.querySelectorAll(".image");
-
-let draggedElement = null;
+let images = document.querySelectorAll(".image");
 
 for (let img of images) {
 
-    img.addEventListener("dragstart", () => {
-        draggedElement = img;
+    img.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("id", img.id);
     });
 
     img.addEventListener("dragover", (e) => {
@@ -100,15 +98,22 @@ for (let img of images) {
     img.addEventListener("drop", (e) => {
         e.preventDefault();
 
-        if (draggedElement === img) return;
+        let sourceId = e.dataTransfer.getData("id");
+		console.log( e.dataTransfer.getData("id"))
 
-        let parent = img.parentNode;
+        let source = document.getElementById(sourceId);
+        let target = e.target;
 
-        let draggedNext = draggedElement.nextSibling;
-        let targetNext = img.nextSibling;
+        if (source === target) return;
 
-        parent.insertBefore(draggedElement, targetNext);
-        parent.insertBefore(img, draggedNext);
+        let sourceHTML = source.innerHTML;
+        let sourceBG = source.style.backgroundImage;
+
+        source.innerHTML = target.innerHTML;
+        source.style.backgroundImage = target.style.backgroundImage;
+
+        target.innerHTML = sourceHTML;
+        target.style.backgroundImage = sourceBG;
     });
 }
     </script>
